@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AetherFlow // Inteligencia en Administración de Proyectos</title>
+  
+  <!-- Modern Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- LATERAL NAVIGATION SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <i data-lucide="compass"></i>
+        </div>
+        <span class="logo-text">AetherFlow</span>
+      </div>
+      
+      <nav class="nav-links">
+        <div class="nav-link active" data-tab="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-link" data-tab="projects">
+          <i data-lucide="folder-kanban"></i>
+          <span>Proyectos</span>
+        </div>
+        <div class="nav-link" data-tab="team">
+          <i data-lucide="users"></i>
+          <span>Equipo</span>
+        </div>
+        <div class="nav-link" data-tab="tracker">
+          <i data-lucide="clock"></i>
+          <span>Control de Tiempo</span>
+        </div>
+        <div class="nav-link" data-tab="instructions">
+          <i data-lucide="help-circle"></i>
+          <span>Manual</span>
+        </div>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <!-- Live Running Timer Widget -->
+        <div class="active-tracker-widget" id="sidebarTracker">
+          <div class="pulse-dot"></div>
+          <div class="tracker-details">
+            <span class="tracker-title" id="sidebarTrackerTask">Desarrollo Core</span>
+            <span class="tracker-timer" id="sidebarTrackerTime">00:00:00</span>
+          </div>
+          <button class="btn-stop-track" id="sidebarTrackerStop" title="Guardar tiempo transcurrido">
+            <i data-lucide="square" style="width: 14px; height: 14px;"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+    <main class="main-workspace">
+      
+      <!-- FLOATING HEADER -->
+      <header class="main-header">
+        <div class="header-search">
+          <i data-lucide="search" style="width: 16px; color: var(--text-muted);"></i>
+          <input type="text" placeholder="Buscar en el sistema..." id="globalSearchInput">
+        </div>
+        
+        <div class="header-actions">
+          <button class="theme-toggle" id="themeTogglerBtn" title="Cambiar Tema Visual">
+            <i data-lucide="sun" id="themeIconSun" style="display: none;"></i>
+            <i data-lucide="moon" id="themeIconMoon"></i>
+          </button>
+          
+          <button class="notification-bell" id="notificationBtn" title="Alertas de Riesgo">
+            <i data-lucide="bell"></i>
+            <span class="notification-badge" id="alertBadgeCount">0</span>
+          </button>
+          
+          <div class="user-profile-summary">
+            <div class="user-avatar">AG</div>
+            <div class="user-meta-details">
+              <span class="user-name-label">Administrador</span>
+              <span class="user-role-label">Project Director</span>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <!-- INNER DYNAMIC CONTENT PANELS -->
+      <div class="workspace-content">
+        
+        <!-- ==================== TAB 1: DASHBOARD ==================== -->
+        <section class="tab-panel active" id="tab-dashboard">
+          <div class="metric-grid">
+            <div class="glass-panel metric-card">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Proyectos Activos</span>
+                <div class="metric-val" id="metricActiveProjects">0</div>
+              </div>
+              <div class="metric-icon" style="background-color: rgba(20, 184, 166, 0.12); color: var(--primary-teal)">
+                <i data-lucide="folder"></i>
+              </div>
+            </div>
+            
+            <div class="glass-panel metric-card">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Capital Administrado</span>
+                <div class="metric-val" id="metricTotalBudget">$0</div>
+              </div>
+              <div class="metric-icon" style="background-color: rgba(99, 102, 241, 0.12); color: var(--primary-indigo)">
+                <i data-lucide="dollar-sign"></i>
+              </div>
+            </div>
+            
+            <div class="glass-panel metric-card">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Tareas Pendientes</span>
+                <div class="metric-val" id="metricPendingTasks">0</div>
+              </div>
+              <div class="metric-icon" style="background-color: rgba(245, 158, 11, 0.12); color: var(--accent-amber)">
+                <i data-lucide="list-todo"></i>
+              </div>
+            </div>
+            
+            <div class="glass-panel metric-card">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Margen de Rentabilidad</span>
+                <div class="metric-val" id="metricProfitMargin">0%</div>
+              </div>
+              <div class="metric-icon" style="background-color: rgba(139, 92, 246, 0.12); color: var(--primary-violet)">
+                <i data-lucide="trending-up"></i>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Animated Charts Container Grid -->
+          <div class="charts-grid">
+            <div class="glass-panel">
+              <div class="chart-header">
+                <h3 class="chart-title"><i data-lucide="bar-chart-3" style="width: 18px; color: var(--primary-indigo)"></i>Presupuesto vs Costo Real</h3>
+                <span class="text-xs font-semibold text-slate-400">Expresado en Miles de USD ($)</span>
+              </div>
+              <div id="financialChartContainer" style="height: 240px; width: 100%;"></div>
+            </div>
+            
+            <div class="glass-panel">
+              <div class="chart-header">
+                <h3 class="chart-title"><i data-lucide="pie-chart" style="width: 18px; color: var(--primary-teal)"></i>Categorías</h3>
+              </div>
+              <div id="categoryChartContainer" style="height: 240px; width: 100%;"></div>
+            </div>
+          </div>
+          
+          <div class="charts-grid">
+            <!-- Team Workloads Status -->
+            <div class="glass-panel">
+              <div class="chart-header">
+                <h3 class="chart-title"><i data-lucide="users" style="width: 18px; color: var(--primary-violet)"></i>Bandeja de Trabajo y Capacidad</h3>
+                <span class="text-xs font-bold uppercase tracking-wide px-2 py-0.5 rounded bg-slate-800 text-slate-400">Máx: 5 Tareas</span>
+              </div>
+              <div id="teamWorkloadContainer"></div>
+            </div>
+            
+            <!-- Global Copilot Insights -->
+            <div class="glass-panel flex flex-col justify-between">
+              <div class="chart-header">
+                <h3 class="chart-title"><i data-lucide="sparkles" style="width: 18px; color: var(--primary-teal)"></i>AetherAI Copilot Global</h3>
+              </div>
+              <div class="ai-copilot-banner" style="flex-grow: 1;">
+                <div class="ai-icon-large">
+                  <i data-lucide="brain"></i>
+                </div>
+                <div>
+                  <div class="ai-glow-text">Pronóstico del Portafolio <span class="ai-badge">Activo</span></div>
+                  <p class="ai-typing-effect" id="aiGlobalAdvice">Analizando registros y estimaciones... Calculando variables operativas en tiempo real.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- ==================== TAB 2: PROJECTS DIRECTORY ==================== -->
+        <section class="tab-panel" id="tab-projects">
+          <div class="directory-controls">
+            <h2 class="text-2xl font-bold tracking-tight">Directorio de Iniciativas</h2>
+            
+            <div class="filter-group">
+              <select class="select-custom" id="filterStatus">
+                <option value="all">Todos los Estados</option>
+                <option value="active">Activos</option>
+                <option value="completed">Completados</option>
+              </select>
+              
+              <select class="select-custom" id="filterRisk">
+                <option value="all">Cualquier Riesgo</option>
+                <option value="high">Riesgo Alto</option>
+                <option value="medium">Riesgo Medio</option>
+                <option value="low">Riesgo Bajo</option>
+              </select>
+              
+              <button class="btn-primary" id="btnOpenNewProjectModal">
+                <i data-lucide="plus-circle" style="width: 16px;"></i>
+                Nuevo Proyecto
+              </button>
+            </div>
+          </div>
+          
+          <div class="projects-grid" id="projectsGridContainer">
+            <!-- Cards appended dynamically in app.js -->
+          </div>
+        </section>
+        
+        <!-- ==================== TAB 3: PROJECT DETAIL VIEW ==================== -->
+        <section class="tab-panel" id="tab-project-detail">
+          <div class="project-detail-header">
+            <div class="project-nav-back" id="btnBackToDirectory">
+              <i data-lucide="arrow-left" style="width: 16px;"></i>
+              <span>Volver al Directorio de Proyectos</span>
+            </div>
+            
+            <div class="project-detail-title-row">
+              <div>
+                <span class="project-category" id="detailProjectCategory">Tecnología</span>
+                <h1 class="text-3xl font-extrabold tracking-tight mt-1" id="detailProjectName">Rediseño Core Bancario</h1>
+                <p class="text-sm text-slate-400 mt-2 max-w-3xl" id="detailProjectDesc"></p>
+              </div>
+              <div class="flex flex-col items-end gap-2">
+                <span class="project-status-badge" id="detailProjectStatus">Activo</span>
+                <span class="text-xs text-slate-400" id="detailProjectDates">01/01/2026 - 31/12/2026</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Workspace sub tabs -->
+          <div class="workspace-tab-bar">
+            <div class="workspace-tab active" data-subtab="resumen">Resumen General</div>
+            <div class="workspace-tab" data-subtab="tareas">Tablero Kanban</div>
+            <div class="workspace-tab" data-subtab="gantt">Planificador Gantt</div>
+            <div class="workspace-tab" data-subtab="finanzas">Presupuestos e Inversión</div>
+            <div class="workspace-tab" data-subtab="documentos">Archivos Compartidos</div>
+            <div class="workspace-tab" data-subtab="correos">Historial de Comunicación</div>
+            <div class="workspace-tab" data-subtab="ai">AetherAI Heurísticas</div>
+          </div>
+          
+          <!-- SUBTAB PANELS -->
+          <div class="subtab-content">
+            
+            <!-- SUBTAB: RESUMEN -->
+            <div class="subtab-panel active" id="subtab-resumen">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                
+                <!-- Financial details -->
+                <div class="glass-panel flex flex-col justify-between">
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Eficiencia Financiera</h3>
+                    <div class="flex justify-between items-center mb-2">
+                      <span class="text-xs text-slate-400">Presupuesto Acordado:</span>
+                      <span class="text-sm font-bold" id="resumenBudget">$0</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                      <span class="text-xs text-slate-400">Gastos + Mano de Obra:</span>
+                      <span class="text-sm font-bold text-red-400" id="resumenActualCost">$0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-slate-400">Margen Neto Estimado:</span>
+                      <span class="text-sm font-bold text-green-400" id="resumenProfitability">$0</span>
+                    </div>
+                  </div>
+                  <div class="project-progress-container mt-4">
+                    <div class="progress-header">
+                      <span>Capital Quemado</span>
+                      <span id="resumenBudgetPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-outer">
+                      <div class="progress-bar-inner" id="resumenBudgetBar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Completion tracker -->
+                <div class="glass-panel flex flex-col justify-between">
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Avance Técnico</h3>
+                    <div class="flex justify-between items-center mb-2">
+                      <span class="text-xs text-slate-400">Hitos Totales:</span>
+                      <span class="text-sm font-bold" id="resumenTotalTasks">0 Tareas</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                      <span class="text-xs text-slate-400">Hitos Completados:</span>
+                      <span class="text-sm font-bold text-green-400" id="resumenCompletedTasks">0 Tareas</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs text-slate-400">Línea de Tiempo Transcurrida:</span>
+                      <span class="text-sm font-bold text-slate-400" id="resumenTimelineElapsed">0%</span>
+                    </div>
+                  </div>
+                  <div class="project-progress-container mt-4">
+                    <div class="progress-header">
+                      <span>Progreso del Trabajo</span>
+                      <span id="resumenProgressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-outer">
+                      <div class="progress-bar-inner" id="resumenProgressBar" style="width: 0%; background: linear-gradient(to right, var(--primary-teal), #10b981);"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Risk evaluation summary -->
+                <div class="glass-panel flex flex-col justify-between" id="resumenRiskPanel">
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Diagnóstico Operativo</h3>
+                    <div class="flex items-center gap-2 mb-3">
+                      <i data-lucide="shield-alert" id="resumenRiskIcon" style="width: 20px;"></i>
+                      <span class="text-sm font-extrabold uppercase" id="resumenRiskLevel">Riesgo Bajo</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="resumenRiskAdvice"></p>
+                  </div>
+                  <div class="mt-4 pt-3 border-t border-slate-700/30 flex justify-between items-center">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Ruta Crítica Inmediata:</span>
+                    <span class="text-xs font-semibold text-slate-300" id="resumenCriticalPath">Cargando...</span>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <!-- SUBTAB: TAREAS (KANBAN) -->
+            <div class="subtab-panel" id="subtab-tareas">
+              <div class="directory-controls" style="margin-bottom: 1.5rem;">
+                <h3 class="text-lg font-bold">Tareas y Flujo Ágil</h3>
+                <button class="btn-primary" id="btnOpenNewTaskModal">
+                  <i data-lucide="plus" style="width: 14px;"></i>
+                  Crear Hito / Tarea
+                </button>
+              </div>
+              
+              <div class="kanban-board">
+                <div class="kanban-column" data-status="todo">
+                  <div class="kanban-column-header">
+                    <span class="kanban-column-title"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Por Hacer</span>
+                    <span class="kanban-column-count" id="count-todo">0</span>
+                  </div>
+                  <div class="kanban-tasks-list" id="list-todo"></div>
+                </div>
+                
+                <div class="kanban-column" data-status="in-progress">
+                  <div class="kanban-column-header">
+                    <span class="kanban-column-title"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>En Curso</span>
+                    <span class="kanban-column-count" id="count-in-progress">0</span>
+                  </div>
+                  <div class="kanban-tasks-list" id="list-in-progress"></div>
+                </div>
+                
+                <div class="kanban-column" data-status="review">
+                  <div class="kanban-column-header">
+                    <span class="kanban-column-title"><span class="w-2 h-2 rounded-full bg-violet-500"></span>En Revisión</span>
+                    <span class="kanban-column-count" id="count-review">0</span>
+                  </div>
+                  <div class="kanban-tasks-list" id="list-review"></div>
+                </div>
+                
+                <div class="kanban-column" data-status="done">
+                  <div class="kanban-column-header">
+                    <span class="kanban-column-title"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Completadas</span>
+                    <span class="kanban-column-count" id="count-done">0</span>
+                  </div>
+                  <div class="kanban-tasks-list" id="list-done"></div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- SUBTAB: GANTT CHART -->
+            <div class="subtab-panel" id="subtab-gantt">
+              <div class="gantt-container" id="ganttViewContainer">
+                <!-- Appended dynamically in app.js -->
+              </div>
+            </div>
+            
+            <!-- SUBTAB: FINANZAS -->
+            <div class="subtab-panel" id="subtab-finanzas">
+              <div class="finances-split-view">
+                
+                <!-- Financial statement & logging expenses -->
+                <div class="glass-panel">
+                  <div class="chart-header">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Historial de Egresos</h3>
+                    <button class="btn-secondary" id="btnOpenExpenseModal" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;">
+                      <i data-lucide="plus" style="width: 12px;"></i>
+                      Registrar Gasto
+                    </button>
+                  </div>
+                  
+                  <div style="overflow-x: auto; margin-top: 1rem;">
+                    <table class="finances-summary-table">
+                      <thead>
+                        <tr>
+                          <th>Concepto</th>
+                          <th>Categoría</th>
+                          <th>Fecha</th>
+                          <th>Monto</th>
+                        </tr>
+                      </thead>
+                      <tbody id="expensesTableBody">
+                        <!-- Loaded dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+                <!-- Labor & Hours list -->
+                <div class="glass-panel">
+                  <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Mano de Obra y Tiempos</h3>
+                  
+                  <div style="overflow-x: auto;">
+                    <table class="finances-summary-table">
+                      <thead>
+                        <tr>
+                          <th>Hito / Tarea</th>
+                          <th>Asignado</th>
+                          <th>Horas</th>
+                          <th>Costo Estimado</th>
+                        </tr>
+                      </thead>
+                      <tbody id="laborTableBody">
+                        <!-- Loaded dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <!-- SUBTAB: DOCUMENTOS -->
+            <div class="subtab-panel" id="subtab-documentos">
+              <div class="directory-controls" style="margin-bottom: 1.5rem;">
+                <h3 class="text-lg font-bold">Bóveda de Documentos</h3>
+                <div>
+                  <input type="file" id="documentFileInput" style="display: none;">
+                  <button class="btn-primary" id="btnSimulateUpload">
+                    <i data-lucide="upload" style="width: 14px;"></i>
+                    Subir Archivo
+                  </button>
+                </div>
+              </div>
+              
+              <div class="documents-grid" id="detailDocumentsGrid">
+                <!-- Appended dynamically in app.js -->
+              </div>
+            </div>
+            
+            <!-- SUBTAB: CORREOS -->
+            <div class="subtab-panel" id="subtab-correos">
+              <div class="glass-panel">
+                <div class="chart-header">
+                  <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Historial de Comunicación con Cliente</h3>
+                  <button class="btn-secondary" id="btnSimulateEmail" style="padding: 0.35rem 0.85rem; font-size: 0.75rem;">
+                    Simular Correo Cliente
+                  </button>
+                </div>
+                <div class="email-stream-list mt-4" id="detailEmailsList">
+                  <!-- Loaded dynamically -->
+                </div>
+              </div>
+            </div>
+            
+            <!-- SUBTAB: AI DIAGNOSTICS -->
+            <div class="subtab-panel" id="subtab-ai">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                
+                <div class="glass-panel">
+                  <h3 class="chart-title mb-4"><i data-lucide="alert-triangle" style="width: 18px; color: var(--accent-amber)"></i>Alertas Operativas Calculadas</h3>
+                  <div class="space-y-3" id="aiDiagnosticsFlags">
+                    <!-- Appended dynamically in app.js -->
+                  </div>
+                </div>
+                
+                <div class="glass-panel flex flex-col justify-between">
+                  <div>
+                    <h3 class="chart-title mb-4"><i data-lucide="cpu" style="width: 18px; color: var(--primary-teal)"></i>Proyección AetherAI</h3>
+                    <div class="ai-copilot-banner" style="background: rgba(30, 41, 59, 0.2); border: 1px solid var(--border-color);">
+                      <div class="ai-icon-large" style="background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--primary-teal)">
+                        <i data-lucide="sparkles"></i>
+                      </div>
+                      <div>
+                        <span class="text-xs font-bold text-slate-400">Predicción en Tiempo Real</span>
+                        <p class="ai-typing-effect" id="aiDiagnosticsForecast" style="margin-top: 0.25rem; font-size: 0.8rem;"></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-4 pt-3 border-t border-slate-700/30">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-1">Ruta Crítica Financiera:</span>
+                    <p class="text-xs text-slate-300 font-semibold" id="aiDiagnosticsCriticalTasks"></p>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+        </section>
+        
+        <!-- ==================== TAB 4: TIME & EXPENSES TRACKER ==================== -->
+        <section class="tab-panel" id="tab-tracker">
+          <div class="global-tracker-grid">
+            
+            <div class="glass-panel time-logger-container">
+              <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">Controlador de Horas</h3>
+              
+              <div class="modal-form-group">
+                <span class="tracker-select-label">Seleccionar Proyecto:</span>
+                <select class="select-custom w-full" id="trackerProjectSelect">
+                  <!-- Loaded dynamically -->
+                </select>
+              </div>
+              
+              <div class="modal-form-group">
+                <span class="tracker-select-label">Seleccionar Tarea:</span>
+                <select class="select-custom w-full" id="trackerTaskSelect">
+                  <!-- Loaded dynamically -->
+                </select>
+              </div>
+              
+              <div class="tracker-digital-clock" id="trackerDigitalClock">00:00:00</div>
+              
+              <div class="tracker-control-row">
+                <button class="btn-track-action btn-track-start" id="trackerStartBtn">
+                  <i data-lucide="play" style="width: 16px;"></i>
+                  Iniciar Timer
+                </button>
+                <button class="btn-track-action btn-track-stop" id="trackerStopBtn" style="display: none;">
+                  <i data-lucide="square" style="width: 16px;"></i>
+                  Detener y Guardar
+                </button>
+              </div>
+            </div>
+            
+            <!-- Global Timesheets ledger -->
+            <div class="glass-panel">
+              <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Registro Global de Mano de Obra</h3>
+              
+              <div style="overflow-x: auto;">
+                <table class="finances-summary-table">
+                  <thead>
+                    <tr>
+                      <th>Proyecto</th>
+                      <th>Hito / Tarea</th>
+                      <th>Especialista</th>
+                      <th>Horas Registradas</th>
+                      <th>Costo Generado</th>
+                    </tr>
+                  </thead>
+                  <tbody id="globalTrackerTimesheetBody">
+                    <!-- Appended dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+          </div>
+        </section>
+        
+        <!-- ==================== TAB 5: TEAM RESOURCES MANAGEMENT ==================== -->
+        <section class="tab-panel" id="tab-team">
+          <div class="directory-controls">
+            <h2 class="text-2xl font-bold tracking-tight">Colaboradores y Recursos</h2>
+            <button class="btn-primary" id="btnOpenNewMemberModal">
+              <i data-lucide="user-plus" style="width: 16px;"></i>
+              Nuevo Colaborador
+            </button>
+          </div>
+          
+          <div class="projects-grid mt-6" id="teamDirectoryGridContainer" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin-top: 1.5rem;">
+            <!-- Appended dynamically in app.js -->
+          </div>
+        </section>
+        
+        <!-- ==================== TAB 6: MANUAL DE INSTRUCCIONES ==================== -->
+        <section class="tab-panel" id="tab-instructions">
+          <div class="directory-controls" style="margin-bottom: 2rem;">
+            <div>
+              <h2 class="text-3xl font-extrabold tracking-tight">Manual Operativo del Sistema</h2>
+              <p class="text-sm text-slate-400 mt-1">Guía técnica exhaustiva de procedimientos, heurísticas de AetherAI y control financiero.</p>
+            </div>
+            <span class="text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full bg-slate-800 text-var(--primary-teal)" style="border: 1px solid rgba(20, 184, 166, 0.15)">Guía del Operador v2.0 // Active</span>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" style="display: grid; grid-template-columns: 2.2fr 0.8fr; gap: 1.5rem; align-items: start;">
+            
+            <!-- Left panel: Guide Content with 10 detailed procedures -->
+            <div class="space-y-6 flex flex-col gap-6">
+              
+              <!-- Procedure 1 & 2: Project Seeding & Blueprints -->
+              <div class="glass-panel">
+                <h3 class="text-lg font-bold text-var(--primary-indigo) mb-4 flex items-center gap-2">
+                  <i data-lucide="compass" style="width: 20px; color: var(--primary-indigo)"></i>
+                  1. Lanzamiento de Proyectos y Plantillas Ágiles
+                </h3>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                  AetherFlow permite inicializar iniciativas de forma vacía o utilizando plantillas ágiles predefinidas (Software, Marketing y Construcción) que cargan de forma inmediata la estructura de tareas base del proyecto.
+                </p>
+                <div class="space-y-3 pl-4 border-l-2 border-indigo-500/20 text-xs text-slate-400 leading-relaxed">
+                  <div>
+                    <span class="font-bold text-slate-200 block mb-1">Procedimiento de Lanzamiento:</span>
+                    <ol class="space-y-2 list-decimal pl-4">
+                      <li>Navega al <strong>Directorio de Proyectos</strong> y haz click en <span class="text-var(--primary-indigo)">"Nuevo Proyecto"</span>.</li>
+                      <li>Completa el nombre de la iniciativa y define la entidad del **Cliente** (crucial para asociar flujos de correo).</li>
+                      <li>Selecciona una **Plantilla Preconfigurada**. <em>(Ej: "Lanzamiento de Software" autogenerará hitos de UX, API backend, QA automatizado y despliegues CI/CD)</em>.</li>
+                      <li>Establece el **Presupuesto Acordado** y las fechas límite. Haz click en <span class="text-var(--primary-indigo)">"Lanzar Proyecto"</span> para persistir en la base local.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Procedure 3: Kanban visual management & Quick Buttons -->
+              <div class="glass-panel">
+                <h3 class="text-lg font-bold text-var(--primary-teal) mb-4 flex items-center gap-2">
+                  <i data-lucide="folder-kanban" style="width: 20px; color: var(--primary-teal)"></i>
+                  2. Administración del Flujo Kanban y Hitos
+                </h3>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                  El tablero de tareas Kanban interactivo permite coordinar las operaciones semanales del equipo y actualizar los porcentajes de avance del proyecto de forma dinámica.
+                </p>
+                <div class="space-y-3 pl-4 border-l-2 border-teal-500/20 text-xs text-slate-400 leading-relaxed">
+                  <div>
+                    <span class="font-bold text-slate-200 block mb-1">Procedimiento en Kanban:</span>
+                    <ul class="space-y-2 list-disc pl-4">
+                      <li><strong>Movimiento por Arrastre (Drag-and-Drop):</strong> Haz click y sostén una tarjeta de hito. Arrástrala y suéltala sobre la columna correspondiente <em>(Por Hacer, En Curso, En Revisión, Completadas)</em>. El sistema recalculará de forma inmediata el avance técnico.</li>
+                      <li><strong>Habilitación Rápida de Hito (Check):</strong> Haz click en el icono de <strong>check-square</strong> en la cabecera de la tarjeta para pasarla a "Completadas" con un solo click.</li>
+                      <li><strong>Remoción Inmediata (Trash):</strong> El icono de <strong>basura</strong> elimina permanentemente el hito, alertando al administrador para reconfigurar el presupuesto.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedure 4: Time Stopwatch & Decimal hours logging -->
+              <div class="glass-panel">
+                <h3 class="text-lg font-bold text-var(--primary-violet) mb-4 flex items-center gap-2">
+                  <i data-lucide="clock" style="width: 20px; color: var(--primary-violet)"></i>
+                  3. Registro de Horas y Costeo de Mano de Obra
+                </h3>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                  El costeo financiero de labor se basa en el registro decimal de horas de los temporizadores y la tarifa horaria individual de cada especialista asignado.
+                </p>
+                <div class="space-y-3 pl-4 border-l-2 border-violet-500/20 text-xs text-slate-400 leading-relaxed">
+                  <div>
+                    <span class="font-bold text-slate-200 block mb-1">Procedimiento de Medición del Tiempo:</span>
+                    <ol class="space-y-2 list-decimal pl-4">
+                      <li><strong>Inicio del Temporizador:</strong> Presiona el botón de <strong>reproducción (Play)</strong> directo en la tarjeta Kanban del hito, o ve al panel global <strong>"Control de Tiempo"</strong>, elige proyecto/tarea y haz click en <strong>"Iniciar Timer"</strong>.</li>
+                      <li><strong>Monitoreo de Segundo Plano:</strong> El temporizador visual se mostrará activamente en la barra lateral lateral, titilando de forma constante para indicar que está operativo.</li>
+                      <li><strong>Detención y Liquidación (Stop):</strong> Al hacer click en <strong>Stop</strong>, el sistema convierte los segundos a horas decimales operativas, multiplica el tiempo por el costo por hora del recurso (ej: <code>$70/h</code> de Lucas) y suma el total monetario a los costos reales de labor del proyecto.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedure 5: Expense physical logging -->
+              <div class="glass-panel">
+                <h3 class="text-lg font-bold text-var(--accent-red) style-header mb-4 flex items-center gap-2" style="color: var(--accent-red)">
+                  <i data-lucide="dollar-sign" style="width: 20px; color: var(--accent-red)"></i>
+                  4. Control de Egresos y Registro de Gastos
+                </h3>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                  Además del costo de mano de obra, los proyectos consumen capital físico (servidores, licencias, viáticos) que deben registrarse en el libro de egresos del proyecto.
+                </p>
+                <div class="space-y-3 pl-4 border-l-2 border-red-500/20 text-xs text-slate-400 leading-relaxed">
+                  <div>
+                    <span class="font-bold text-slate-200 block mb-1">Procedimiento de Transacciones:</span>
+                    <ul class="space-y-2 list-disc pl-4">
+                      <li>Dirígete a la pestaña <strong>"Presupuestos e Inversión"</strong> del proyecto y haz click en <strong>"Registrar Gasto"</strong>.</li>
+                      <li>Define el concepto de egreso y asocia una **Categoría de Destino** (Materiales, Licencias, Viajes, Servicios, Dietas).</li>
+                      <li>Ingresa el monto. Al guardarse, el panel general recalculará la quema de presupuesto y restará el importe del margen neto operativo para actualizar los gráficos SVG en tiempo real.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedure 6: Simulated vault & emails -->
+              <div class="glass-panel">
+                <h3 class="text-lg font-bold text-var(--primary-indigo) mb-4 flex items-center gap-2">
+                  <i data-lucide="archive" style="width: 20px; color: var(--primary-indigo)"></i>
+                  5. Bóveda Documental y Comunicaciones
+                </h3>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                  AetherFlow centraliza los entregables (plano, código comprimido, contratos) y asocia las notas emitidas por stakeholders directo a la ficha del proyecto.
+                </p>
+                <div class="space-y-3 pl-4 border-l-2 border-indigo-500/20 text-xs text-slate-400 leading-relaxed">
+                  <div>
+                    <span class="font-bold text-slate-200 block mb-1">Procedimiento de Gestión Documental y Correos:</span>
+                    <ul class="space-y-2 list-disc pl-4">
+                      <li><strong>Subida de Archivos Compartidos:</strong> En la pestaña <strong>"Archivos Compartidos"</strong>, haz click en <strong>"Subir Archivo"</strong>. Selecciona un archivo real del equipo; el sistema simulará una barra de subida y cargará el documento y tamaño local a la bóveda.</li>
+                      <li><strong>Simulación de Correos del Cliente:</strong> En <strong>"Historial de Comunicación"</strong>, haz click en <strong>"Simular Correo"</strong>. El sistema inyectará automáticamente retroalimentaciones aleatorias de clientes (ej: solicitudes de cambios en el alcance o felicitaciones por el avance) para simular dinámicas de stakeholders.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedure 7 & 8: AI allocating & risk alerts -->
+              <div class="glass-panel">
+                <h3 class="text-lg font-bold text-var(--accent-amber) mb-4 flex items-center gap-2" style="color: var(--accent-amber)">
+                  <i data-lucide="sparkles" style="width: 20px; color: var(--accent-amber)"></i>
+                  6. Heurísticas del Motor Analítico AetherAI
+                </h3>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                  El motor inteligente corre algoritmos locales que analizan la afinidad del personal y predicen peligros de plazos.
+                </p>
+                <div class="space-y-3 pl-4 border-l-2 border-amber-500/20 text-xs text-slate-400 leading-relaxed">
+                  <div>
+                    <span class="font-bold text-slate-200 block mb-1">Procedimiento del Motor de IA:</span>
+                    <ul class="space-y-2 list-disc pl-4">
+                      <li><strong>Asignación por Carga y Perfil:</strong> Al crear un hito en el Kanban, escribe palabras clave en el título (ej: <code>Figma</code>, <code>API</code>, <code>Kubernetes</code>, <code>Testing</code>). El motor analizará el texto en tiempo real y auto-seleccionará al especialista más idóneo que tenga menor carga acumulada.</li>
+                      <li><strong>Cálculo del Índice de Riesgo:</strong> El sistema compara constantemente el porcentaje de tiempo transcurrido desde la fecha de inicio del proyecto contra la tasa de tareas completadas. Si la desviación temporal supera el <code>20%</code>, la IA cambiará el estado a <strong>"Riesgo Medio" o "Riesgo Alto"</strong>, actualizando los contadores de alertas globales.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedure 9: Team Management & Capacity limits -->
+              <div class="glass-panel">
+                <h3 class="text-lg font-bold text-var(--primary-teal) mb-4 flex items-center gap-2">
+                  <i data-lucide="users" style="width: 20px; color: var(--primary-teal)"></i>
+                  7. Gestión del Equipo y Límites de Capacidad
+                </h3>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                  El sistema monitorea la bandeja de trabajo de los especialistas. Una carga superior a 5 tareas activas en paralelo es catalogada como "Sobrecarga" por la IA.
+                </p>
+                <div class="space-y-3 pl-4 border-l-2 border-teal-500/20 text-xs text-slate-400 leading-relaxed">
+                  <div>
+                    <span class="font-bold text-slate-200 block mb-1">Procedimiento de Recursos:</span>
+                    <ol class="space-y-2 list-decimal pl-4">
+                      <li>Accede a la pestaña lateral <strong>"Equipo"</strong> para visualizar a los colaboradores y sus costos generados acumulados.</li>
+                      <li>Haz click en <strong>"Nuevo Colaborador"</strong> para registrar un profesional, asignando su costo por hora de labor y color.</li>
+                      <li>El sistema recalculará los gráficos de capacidad del Dashboard general y comenzará a evaluar el nuevo recurso en las recomendaciones automatizadas de AetherAI.</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Procedure 10: Theme Swapper visual redraw -->
+              <div class="glass-panel">
+                <h3 class="text-lg font-bold text-slate-200 mb-4 flex items-center gap-2">
+                  <i data-lucide="sun" style="width: 20px; color: var(--primary-teal)"></i>
+                  8. Alternancia de Temas Visuales
+                </h3>
+                <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                  AetherFlow posee un tema híbrido responsive que recalibra las curvas de color de los gráficos para mantener legibilidad total.
+                </p>
+                <div class="space-y-3 pl-4 border-l-2 border-slate-500/20 text-xs text-slate-400 leading-relaxed">
+                  <div>
+                    <span class="font-bold text-slate-200 block mb-1">Procedimiento de Tema:</span>
+                    <ul class="space-y-2 list-disc pl-4">
+                      <li>Presiona el icono de <strong>Luna / Sol</strong> en la cabecera flotante para cambiar entre tema oscuro Obsidian y tema claro Cool Gray.</li>
+                      <li>El controlador ordenará redibujar instantáneamente todos los gráficos vectoriales SVG del Dashboard con las nuevas variables cromáticas de fondo.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right panel: Interactive FAQs Details Summary -->
+            <div class="space-y-4 flex flex-col gap-4">
+              <div class="glass-panel" style="position: sticky; top: calc(var(--header-height) + 2rem);">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-1.5" style="display: flex; gap: 0.5rem; align-items: center;">
+                  <i data-lucide="help-circle" style="color: var(--primary-teal); width: 16px;"></i>
+                  Preguntas Frecuentes
+                </h3>
+                
+                <div class="space-y-3 flex flex-col gap-3">
+                  
+                  <details class="glass-panel cursor-pointer" style="padding: 1rem; background: rgba(30, 41, 59, 0.25);">
+                    <summary class="text-xs font-bold text-slate-200 outline-none select-none list-none flex justify-between items-center" style="display: flex; justify-content: space-between; align-items: center;">
+                      ¿Cómo calcula AetherAI las horas?
+                      <i data-lucide="chevron-down" style="width: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                      El cronómetro calcula segundos activos. Al hacer Stop, los segundos se dividen entre <code>3600</code> para obtener un valor decimal exacto <em>(ej: 45 min = 0.75h)</em>. Este valor se multiplica por el costo/hora del profesional, imputando el gasto al proyecto en tiempo real.
+                    </p>
+                  </details>
+                  
+                  <details class="glass-panel cursor-pointer" style="padding: 1rem; background: rgba(30, 41, 59, 0.25);">
+                    <summary class="text-xs font-bold text-slate-200 outline-none select-none list-none flex justify-between items-center" style="display: flex; justify-content: space-between; align-items: center;">
+                      ¿Puedo usar mi base de datos?
+                      <i data-lucide="chevron-down" style="width: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                      Actualmente, AetherFlow opera 100% en el lado del cliente (localStorage). Esto permite un lanzamiento inmediato y sin configuraciones. Es posible exportar la cadena JSON de localStorage desde la consola del navegador para respaldar datos.
+                    </p>
+                  </details>
+                  
+                  <details class="glass-panel cursor-pointer" style="padding: 1rem; background: rgba(30, 41, 59, 0.25);">
+                    <summary class="text-xs font-bold text-slate-200 outline-none select-none list-none flex justify-between items-center" style="display: flex; justify-content: space-between; align-items: center;">
+                      ¿Cómo se alerta la sobrecarga?
+                      <i data-lucide="chevron-down" style="width: 12px; color: var(--text-muted);"></i>
+                    </summary>
+                    <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                      El panel de equipo y el dashboard central marcan en color rojo de advertencia a cualquier colaborador que acumule <strong>5 o más tareas en estado "Por Hacer" o "En Curso"</strong>, avisando al Project Manager de un posible cuello de botella en los entregables.
+                    </p>
+                  </details>
+                  
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </section>
+        
+      </div>
+      
+    </main>
+    
+  </div>
+  
+  <!-- ==================== MODAL: NUEVO PROYECTO ==================== -->
+  <div class="modal-overlay" id="modalNewProject">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Lanzar Nueva Iniciativa</h3>
+        <button class="modal-close" id="btnCloseProjectModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="modal-form-group">
+          <label for="newProjName">Nombre del Proyecto</label>
+          <input type="text" id="newProjName" class="input-custom" placeholder="Ej: Portal Ecommerce v1.0">
+        </div>
+        
+        <div class="modal-form-group">
+          <label for="newProjClient">Cliente / Entidad</label>
+          <input type="text" id="newProjClient" class="input-custom" placeholder="Ej: Corporación Retail SA">
+        </div>
+        
+        <div class="modal-form-group">
+          <label for="newProjDesc">Descripción General</label>
+          <textarea id="newProjDesc" class="input-custom textarea-custom" placeholder="Detalla el alcance y metas principales del proyecto..."></textarea>
+        </div>
+        
+        <div class="modal-form-group">
+          <label for="newProjCategory">Categoría</label>
+          <select id="newProjCategory" class="select-custom">
+            <option value="Tecnología">Tecnología & Software</option>
+            <option value="Marketing">Marketing & Publicidad</option>
+            <option value="Construcción">Construcción & Obras</option>
+          </select>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="modal-form-group">
+            <label for="newProjBudget">Presupuesto ($)</label>
+            <input type="number" id="newProjBudget" class="input-custom" value="30000">
+          </div>
+          <div class="modal-form-group">
+            <label for="newProjTemplate">Preconfiguración (Plantilla)</label>
+            <select id="newProjTemplate" class="select-custom">
+              <option value="none">Ninguna (Vacío)</option>
+              <option value="softwareLaunch">Lanzamiento de Software</option>
+              <option value="marketingCampaign">Campaña Marketing</option>
+              <option value="constructionPlan">Diseño y Construcción</option>
+            </select>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="modal-form-group">
+            <label for="newProjStart">Fecha de Inicio</label>
+            <input type="date" id="newProjStart" class="input-custom">
+          </div>
+          <div class="modal-form-group">
+            <label for="newProjEnd">Fecha Límite</label>
+            <input type="date" id="newProjEnd" class="input-custom">
+          </div>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnCancelProject">Cancelar</button>
+        <button class="btn-primary" id="btnSaveProject">Lanzar Proyecto</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ==================== MODAL: NUEVA TAREA ==================== -->
+  <div class="modal-overlay" id="modalNewTask">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Añadir Hito / Tarea</h3>
+        <button class="modal-close" id="btnCloseTaskModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="modal-form-group">
+          <label for="newTaskName">Nombre de la Tarea</label>
+          <input type="text" id="newTaskName" class="input-custom" placeholder="Ej: Configurar endpoints de pago">
+        </div>
+        
+        <div class="modal-form-group">
+          <label for="newTaskDesc">Descripción del Trabajo</label>
+          <textarea id="newTaskDesc" class="input-custom textarea-custom" placeholder="Especificar entregables requeridos para marcar esta tarea como completada..."></textarea>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="modal-form-group">
+            <label for="newTaskPriority">Prioridad</label>
+            <select id="newTaskPriority" class="select-custom">
+              <option value="low">Baja</option>
+              <option value="medium" selected>Media</option>
+              <option value="high">Alta</option>
+            </select>
+          </div>
+          <div class="modal-form-group">
+            <label for="newTaskHours">Horas Estimadas</label>
+            <input type="number" id="newTaskHours" class="input-custom" value="20">
+          </div>
+        </div>
+        
+        <div class="modal-form-group">
+          <label for="newTaskAssignee">Especialista Asignado</label>
+          <select id="newTaskAssignee" class="select-custom">
+            <!-- Loaded dynamically in app.js -->
+          </select>
+        </div>
+        
+        <!-- Smart AI Advisor Suggestion within modal -->
+        <div class="ai-copilot-banner mt-3" style="padding: 0.85rem; border-radius: var(--radius-sm); font-size: 0.75rem; background: rgba(20, 184, 166, 0.05); border-color: rgba(20, 184, 166, 0.15)">
+          <div class="ai-icon-large" style="width: 32px; height: 32px; border-radius: 8px; font-size: 0.7rem;">
+            <i data-lucide="brain" style="width: 14px; height: 14px;"></i>
+          </div>
+          <div>
+            <div class="font-bold text-slate-300">Asignación Sugerida AetherAI</div>
+            <p class="text-slate-400 mt-1" id="aiTaskAssignmentAdvice">Escribe un nombre de tarea para evaluar la carga del equipo y recomendar el mejor especialista.</p>
+          </div>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnCancelTask">Cancelar</button>
+        <button class="btn-primary" id="btnSaveTask">Agregar Hito</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ==================== MODAL: REGISTRAR GASTO ==================== -->
+  <div class="modal-overlay" id="modalNewExpense">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Transacción de Egreso</h3>
+        <button class="modal-close" id="btnCloseExpenseModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="modal-form-group">
+          <label for="newExpenseDesc">Concepto del Gasto</label>
+          <input type="text" id="newExpenseDesc" class="input-custom" placeholder="Ej: Compra de Hosting VPS Anual">
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="modal-form-group">
+            <label for="newExpenseCategory">Categoría</label>
+            <select id="newExpenseCategory" class="select-custom">
+              <option value="Materiales">Materiales</option>
+              <option value="Licencias">Licencias / Software</option>
+              <option value="Viajes">Viajes / Viáticos</option>
+              <option value="Servicios">Servicios Operativos</option>
+              <option value="Dietas">Alimentación / Dietas</option>
+            </select>
+          </div>
+          <div class="modal-form-group">
+            <label for="newExpenseAmount">Monto ($)</label>
+            <input type="number" id="newExpenseAmount" class="input-custom" placeholder="Ej: 450">
+          </div>
+        </div>
+        
+        <div class="modal-form-group">
+          <label for="newExpenseDate">Fecha del Egreso</label>
+          <input type="date" id="newExpenseDate" class="input-custom">
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnCancelExpense">Cancelar</button>
+        <button class="btn-primary" id="btnSaveExpense">Registrar Gasto</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ==================== MODAL: NUEVO COLABORADOR ==================== -->
+  <div class="modal-overlay" id="modalNewMember">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Agregar Colaborador Técnico</h3>
+        <button class="modal-close" id="btnCloseMemberModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="modal-form-group">
+          <label for="newMemName">Nombre Completo</label>
+          <input type="text" id="newMemName" class="input-custom" placeholder="Ej: Carlos Santana">
+        </div>
+        
+        <div class="modal-form-group">
+          <label for="newMemRole">Especialidad (Rol)</label>
+          <input type="text" id="newMemRole" class="input-custom" placeholder="Ej: Backend Developer, Security Engineer">
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="modal-form-group">
+            <label for="newMemRate">Costo por Hora ($/h)</label>
+            <input type="number" id="newMemRate" class="input-custom" value="50">
+          </div>
+          <div class="modal-form-group">
+            <label for="newMemColor">Color Temático</label>
+            <select id="newMemColor" class="select-custom">
+              <option value="#6366f1">Indigo Eléctrico</option>
+              <option value="#10b981">Esmeralda Activo</option>
+              <option value="#3b82f6">Azul Cobalto</option>
+              <option value="#f59e0b">Ámbar Enérgico</option>
+              <option value="#ec4899">Fucsia Brillante</option>
+              <option value="#8b5cf6">Violeta Real</option>
+            </select>
+          </div>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btnCancelMember">Cancelar</button>
+        <button class="btn-primary" id="btnSaveMember">Agregar Colaborador</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- TOAST ALERTS DISPLAY WRAPPER -->
+  <div class="toast-container" id="toastDisplayContainer"></div>
+  
+  <!-- SCRIPT UTILITIES LOADS -->
+  <script src="js/templates.js"></script>
+  <script src="data/seed.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
